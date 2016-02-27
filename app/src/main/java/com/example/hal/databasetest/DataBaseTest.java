@@ -1,5 +1,6 @@
 package com.example.hal.databasetest;
 
+import android.app.AlertDialog;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -31,8 +32,6 @@ public class DataBaseTest extends AppCompatActivity {
         setContentView(R.layout.activity_data_base_test);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        view = new View(this);
 
         db = new DataBase();
         db.DBWritableOpen(getApplicationContext());
@@ -79,9 +78,15 @@ public class DataBaseTest extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch(id){
+            case R.id.action_settings:
+                return true;
+
+            case R.id.action_delete:
+                return true;
+
         }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -107,16 +112,23 @@ public class DataBaseTest extends AppCompatActivity {
                 // 選択アイテムを取得
                 helper = new DataBaseHelper(getApplicationContext());
                 SQLiteDatabase db = helper.getReadableDatabase();
+
                 Cursor c = db.query(DataBase.TABLE_NAME,
                         new String[]{DataBase.ID, DataBase.NAME, DataBase.AGE},
                         null, null, null, null, null);
 
-                //TextView tvName = ();
-
-
                 if (c.moveToPosition(pos)) {
                     // 検索結果をCursorから取り出す
-                    Log.d("OUTPUT", c.getString(1));
+
+                    Bundle bundle = new Bundle();
+
+                    bundle.putInt(DataBase.ID, c.getInt(0));
+                    bundle.putString(DataBase.NAME, c.getString(1));
+                    bundle.putInt(DataBase.AGE, c.getInt(2));
+
+                    TestDialogFragment dialog = new TestDialogFragment();
+                    dialog.setArguments(bundle);
+                    dialog.show(getFragmentManager(), "test");
                 }
                 c.close();
             }
