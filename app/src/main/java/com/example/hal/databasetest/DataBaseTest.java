@@ -21,7 +21,6 @@ import android.widget.TextView;
 
 public class DataBaseTest extends AppCompatActivity {
 
-
     DataBase db;
     View view;
     SQLiteOpenHelper helper;
@@ -55,7 +54,6 @@ public class DataBaseTest extends AppCompatActivity {
                             @Override
                             public void onClick(View v) {
                                 db.DBUndo();
-                                Output();
                             }
                         })
                         .show();
@@ -110,10 +108,12 @@ public class DataBaseTest extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent,
                                     View view, int pos, long id) {
                 // 選択アイテムを取得
-                helper = new DataBaseHelper(getApplicationContext());
-                SQLiteDatabase db = helper.getReadableDatabase();
+                //db.DBWritableOpen(getApplicationContext());
 
-                Cursor c = db.query(DataBase.TABLE_NAME,
+                helper = new DataBaseHelper(getApplicationContext());
+                SQLiteDatabase sqdb = helper.getReadableDatabase();
+
+                Cursor c = sqdb.query(DataBase.TABLE_NAME,
                         new String[]{DataBase.ID, DataBase.NAME, DataBase.AGE},
                         null, null, null, null, null);
 
@@ -129,6 +129,7 @@ public class DataBaseTest extends AppCompatActivity {
                     TestDialogFragment dialog = new TestDialogFragment();
                     dialog.setArguments(bundle);
                     dialog.show(getFragmentManager(), "test");
+
                 }
                 c.close();
             }
